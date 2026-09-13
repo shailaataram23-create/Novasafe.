@@ -1,348 +1,360 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NovaSafe — On-Device Mobile Shield | INSPIRE-MANAK Exhibition Prototype</title>
-  
+  <title>NovaSafe | INSPIRE-MANAK Working Prototype</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Tone.js for Native-Sounding Haptic/Buzzer Audio FX without External Audio Files -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
-
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              50: '#eef2ff',
-              100: '#e0e7ff',
-              400: '#818cf8',
-              500: '#6366f1',
-              600: '#4f46e5',
-              700: '#4338ca',
-              900: '#1e1b4b',
-              950: '#0f0e26'
-            },
-            shield: {
-              emerald: '#10b981',
-              rose: '#f43f5e',
-              amber: '#f59e0b'
-            }
-          },
-          fontFamily: {
-            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif']
-          },
-          animation: {
-            'pulse-subtle': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-            'shake': 'shake 0.4s cubic-bezier(.36,.07,.19,.97) both',
-            'bounce-gentle': 'bounce 2s infinite'
-          },
-          keyframes: {
-            shake: {
-              '10%, 90%': { transform: 'translate3d(-1px, 0, 0)' },
-              '20%, 80%': { transform: 'translate3d(2px, 0, 0)' },
-              '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0)' },
-              '40%, 60%': { transform: 'translate3d(4px, 0, 0)' }
-            }
-          }
-        }
-      }
-    }
-  </script>
-
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
-    
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
     body {
-      font-family: 'Inter', sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
     }
-    .font-mono {
-      font-family: 'JetBrains Mono', monospace;
-    }
-    
-    /* Device Frame Sizing */
-    .mobile-screen-viewport {
-      width: 340px;
-      height: 690px;
-    }
-    @media (max-width: 380px) {
-      .mobile-screen-viewport {
-        width: 300px;
-        height: 610px;
-      }
-    }
-
-    /* Custom Scrollbars */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #090d16;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #27354f;
-      border-radius: 9999px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #3b4e72;
+    .phone-shadow {
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.4), 0 0 0 12px #1e293b, 0 0 0 14px #334155;
     }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center py-8 px-4 antialiased selection:bg-emerald-500 selection:text-white">
 
-  <!-- NAVIGATION BAR -->
-  <header class="sticky top-0 z-50 backdrop-blur-xl bg-slate-950/85 border-b border-slate-800/80">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-      
-      <!-- Brand Logo -->
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-indigo-500 to-emerald-400 p-[2px] shadow-lg shadow-brand-500/20">
-          <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-            <i data-lucide="shield-check" class="w-5 h-5 text-emerald-400"></i>
-          </div>
-        </div>
-        <div>
-          <div class="flex items-center gap-2">
-            <span class="text-base font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-indigo-300 bg-clip-text text-transparent">
-              NovaSafe
-            </span>
-            <span class="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-brand-500/20 text-brand-400 border border-brand-500/30">
-              v1.4 Prototype
-            </span>
-          </div>
-          <p class="text-[11px] text-slate-400 font-medium hidden sm:block">On-Device Active Child Shield for Android</p>
-        </div>
-      </div>
-
-      <!-- Center Badge for Exhibition -->
-      <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/90 border border-slate-800 text-xs text-slate-300">
-        <span class="flex h-2 w-2 relative">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-        </span>
-        <span class="font-semibold text-white">INSPIRE-MANAK Scheme Project</span>
-        <span class="text-slate-500">|</span>
-        <span class="text-indigo-300">National Science Innovation</span>
-      </div>
-
-      <!-- Navigation & Action Links -->
-      <div class="flex items-center gap-2 sm:gap-3">
-        <button onclick="triggerQuickTour()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700/80 transition flex items-center gap-1.5">
-          <i data-lucide="help-circle" class="w-3.5 h-3.5 text-brand-400"></i>
-          <span>How to Test</span>
-        </button>
-        <a href="#architecture" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 hover:bg-brand-500 text-white shadow-md shadow-brand-700/30 transition flex items-center gap-1.5">
-          <i data-lucide="cpu" class="w-3.5 h-3.5"></i>
-          <span class="hidden sm:inline">Inspect</span> Architecture
-        </a>
-      </div>
+  <!-- Header -->
+  <header class="text-center max-w-2xl mb-8">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold uppercase tracking-wider mb-3">
+      <i data-lucide="shield-check" class="w-4 h-4"></i> INSPIRE-MANAK Project Exhibit
     </div>
+    <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-2">
+      NovaSafe <span class="text-emerald-400">Mobile Shield</span>
+    </h1>
+    <p class="text-slate-400 text-sm sm:text-base">
+      On-Device Child Safety, AutoPay Interceptor & Active Screen Locker Prototype.
+    </p>
   </header>
 
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+  <!-- Main Container -->
+  <main class="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
     
-    <!-- Hero Banner Text -->
-    <div class="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold mb-3">
-        <i data-lucide="lock" class="w-3.5 h-3.5"></i> Zero Sensor Access • Hardware Privacy Preserved
+    <!-- LEFT: Interactive Phone Mockup -->
+    <div class="lg:col-span-6 flex flex-col items-center justify-center">
+      <div class="text-xs text-slate-400 font-medium mb-3 flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        Interactive Android Simulator (Tap the buttons inside)
       </div>
-      <h1 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white leading-tight">
-        Prevent Accidental Subscriptions &amp; APKs <br class="hidden sm:block" />
-        <span class="bg-gradient-to-r from-brand-400 via-indigo-300 to-emerald-400 bg-clip-text text-transparent">
-          Without Spying on the Child
-        </span>
-      </h1>
-      <p class="mt-3 text-sm sm:text-base text-slate-300">
-        NovaSafe deploys an immediate <span class="text-white font-semibold underline decoration-brand-500 underline-offset-4">Active Screen Locker</span> over YouTube Premium trials, game AutoPay screens, and unverified package installers. Parents authenticate via device biometrics, or trigger an <span class="text-white font-semibold">Emergency Exit Bounce</span> straight to the home launcher.
-      </p>
-    </div>
 
-    <!-- MAIN TWO-COLUMN WORKSPACE: Interactive Phone + Presentation Panels -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start justify-center">
-
-      <!-- LEFT COLUMN: Realistic Android Phone Simulator (Lg: 5 cols) -->
-      <div class="lg:col-span-5 flex flex-col items-center">
+      <!-- Phone Outer Frame -->
+      <div class="relative w-[340px] h-[680px] bg-slate-900 rounded-[48px] overflow-hidden phone-shadow border-4 border-slate-700 flex flex-col select-none">
         
-        <div class="text-center mb-3">
-          <span class="text-xs uppercase tracking-wider font-bold text-slate-400 flex items-center justify-center gap-1.5">
-            <i data-lucide="smartphone" class="w-4 h-4 text-brand-400"></i> Interactive Device Simulator
-          </span>
-          <p class="text-[11px] text-slate-500 mt-0.5">Test real touch triggers directly in this live virtual phone</p>
+        <!-- Status Bar -->
+        <div class="h-10 bg-slate-900/90 backdrop-blur-md px-6 flex items-center justify-between text-xs text-slate-400 z-30 shrink-0">
+          <span id="live-clock" class="font-semibold text-slate-200">12:30</span>
+          <!-- Camera cutout -->
+          <div class="w-4 h-4 rounded-full bg-black border border-slate-800"></div>
+          <div class="flex items-center gap-1.5">
+            <i data-lucide="wifi" class="w-3.5 h-3.5"></i>
+            <i data-lucide="battery-medium" class="w-3.5 h-3.5 text-emerald-400"></i>
+          </div>
         </div>
 
-        <!-- Smartphone Physical Casing -->
-        <div class="relative group">
-          <!-- Subtle Device Glow -->
-          <div class="absolute -inset-1.5 bg-gradient-to-tr from-brand-600/30 via-indigo-600/20 to-emerald-500/30 rounded-[50px] blur-xl opacity-60 group-hover:opacity-90 transition duration-700"></div>
-
-          <!-- Phone Outer Shell -->
-          <div class="relative bg-slate-900 border-[8px] border-slate-800/90 rounded-[48px] shadow-2xl p-1 shadow-black/80 flex flex-col items-center">
-            
-            <!-- Phone Glass Screen -->
-            <div id="phoneViewport" class="mobile-screen-viewport bg-slate-950 rounded-[38px] overflow-hidden relative flex flex-col justify-between shadow-inner select-none border border-slate-800/60">
-              
-              <!-- 1. TOP STATUS BAR (Android 14/15 Style) -->
-              <div class="h-8 w-full bg-slate-950/85 backdrop-blur-md text-slate-200 flex items-center justify-between px-5 text-xs font-semibold z-40">
-                <span id="statusBarClock" class="tracking-tight text-[11px] font-medium">12:30</span>
-                
-                <!-- Punch Hole Camera (Demonstrates No Hardware Green Privacy Dot) -->
-                <div class="flex items-center gap-1.5">
-                  <div class="w-3.5 h-3.5 bg-black border border-slate-800 rounded-full flex items-center justify-center">
-                    <div class="w-1.5 h-1.5 bg-slate-900 rounded-full"></div>
-                  </div>
-                  <!-- Camera Green Dot Simulator (Remains OFF to prove 0 spying) -->
-                  <div id="greenPrivacyDot" class="hidden w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Hardware Mic/Cam Active"></div>
+        <!-- Phone Screen Content (Dynamic Stack) -->
+        <div class="relative flex-1 w-full overflow-hidden bg-slate-950">
+          
+          <!-- SCREEN 1: Game / Video App with Subscription Trap -->
+          <div id="view-game" class="absolute inset-0 flex flex-col justify-between p-4 bg-gradient-to-b from-indigo-950 via-slate-900 to-slate-950 z-10 transition-all duration-300">
+            <!-- App Top Bar -->
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-white shadow-md">
+                  <i data-lucide="play" class="w-4 h-4 fill-white"></i>
                 </div>
-
-                <!-- Battery, Wi-Fi & Signal -->
-                <div class="flex items-center gap-1.5 text-[11px] text-slate-300">
-                  <i data-lucide="wifi" class="w-3.5 h-3.5"></i>
-                  <span class="text-[10px] font-mono">92%</span>
-                  <i data-lucide="battery" class="w-3.5 h-3.5 text-emerald-400"></i>
+                <div>
+                  <div class="text-xs font-bold text-slate-200">StreamZone Kids</div>
+                  <div class="text-[10px] text-slate-400">Family Mode</div>
                 </div>
               </div>
+              <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">Free Tier</span>
+            </div>
 
-              <!-- 2. SCREEN VIEW A: TARGET CONTENT APP (Simulates YouTube Kids / Game with ₹199 AutoPay trap) -->
-              <div id="appScreenView" class="absolute inset-0 pt-8 pb-10 flex flex-col bg-zinc-900 z-10">
-                
-                <!-- Fake App Navigation Bar -->
-                <div class="px-4 py-2.5 bg-zinc-900/95 border-b border-zinc-800 flex items-center justify-between">
-                  <div class="flex items-center gap-2">
-                    <div class="w-7 h-5 bg-red-600 rounded flex items-center justify-center text-white shadow-sm shadow-red-900">
-                      <i data-lucide="play" class="w-3 h-3 fill-current"></i>
-                    </div>
-                    <span class="font-bold text-sm tracking-tight text-white">StreamTube Kids</span>
-                  </div>
-                  <div class="flex items-center gap-2 text-zinc-400">
-                    <i data-lucide="search" class="w-4 h-4"></i>
-                    <div class="w-6 h-6 rounded-full bg-red-800/80 border border-red-500/40 flex items-center justify-center text-[10px] font-bold text-white">
-                      R
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Fake Video Stream Player Container -->
-                <div class="w-full h-44 bg-zinc-950 relative flex items-center justify-center overflow-hidden">
-                  <div class="absolute inset-0 bg-gradient-to-br from-indigo-950 via-slate-900 to-purple-950 opacity-90"></div>
-                  <!-- Abstract Cartoon Art placeholder -->
-                  <div class="relative z-10 flex flex-col items-center text-center p-3">
-                    <div class="w-12 h-12 rounded-full bg-white/10 backdrop-blur border border-white/20 flex items-center justify-center mb-1 text-white animate-pulse-subtle">
-                      <i data-lucide="gamepad-2" class="w-6 h-6 text-amber-300"></i>
-                    </div>
-                    <span class="text-xs font-bold text-white drop-shadow">Super Heroes Cartoon Championship</span>
-                    <span class="text-[10px] text-zinc-400">Streamed 2.4M times • Live</span>
-                  </div>
-                  <div class="absolute bottom-2 left-3 right-3 flex items-center justify-between text-[10px] text-zinc-400 z-10">
-                    <span class="bg-red-600 text-white px-1 rounded text-[9px] font-bold">LIVE</span>
-                    <span>HD 1080p</span>
-                  </div>
-                </div>
-
-                <!-- Dangerous In-App Subscription / UPI AutoPay Trap Card -->
-                <div class="flex-1 p-3.5 flex flex-col justify-end bg-gradient-to-t from-zinc-950 via-zinc-900 to-zinc-900">
-                  <div class="bg-gradient-to-b from-zinc-800 to-zinc-900 border border-amber-500/40 rounded-2xl p-3.5 shadow-2xl relative overflow-hidden">
-                    <div class="absolute top-0 right-0 bg-amber-500 text-slate-950 text-[9px] font-black uppercase px-2 py-0.5 rounded-bl-lg">
-                      1-Month Free Trial
-                    </div>
-                    
-                    <div class="flex items-center gap-2 mb-1.5">
-                      <div class="p-1 rounded-lg bg-amber-500/20 text-amber-400">
-                        <i data-lucide="zap" class="w-4 h-4"></i>
-                      </div>
-                      <h4 class="text-xs font-bold text-white">Unlock Unlimited Cartoons</h4>
-                    </div>
-
-                    <p class="text-[11px] text-zinc-300 leading-snug">
-                      Get Premium Ad-Free playback. Auto-renews at <span class="font-bold text-white">₹199 / month via UPI AutoPay</span> after 30 days.
-                    </p>
-
-                    <!-- Interactive Checkout Trigger Button -->
-                    <button id="triggerCheckoutBtn" onclick="triggerPurchaseIntercept()" class="w-full mt-3 py-2.5 px-3 bg-gradient-to-r from-red-600 via-rose-600 to-red-600 hover:brightness-110 active:scale-95 transition rounded-xl font-bold text-xs text-white shadow-lg shadow-red-950/60 flex items-center justify-center gap-2 border border-red-400/40">
-                      <i data-lucide="credit-card" class="w-3.5 h-3.5"></i>
-                      Tap to Start Instant 1-Click AutoPay
-                    </button>
-                    <p class="text-[9px] text-center text-zinc-400 mt-1.5 flex items-center justify-center gap-1">
-                      <i data-lucide="alert-circle" class="w-3 h-3 text-amber-400"></i> Simulates accidental child subscription click
-                    </p>
-                  </div>
-                </div>
-
+            <!-- Fake Content -->
+            <div class="my-auto space-y-3">
+              <div class="w-full aspect-video rounded-2xl bg-indigo-900/40 border border-indigo-700/30 flex flex-col items-center justify-center p-4 text-center">
+                <i data-lucide="lock" class="w-8 h-8 text-amber-400 mb-2"></i>
+                <div class="text-sm font-bold text-slate-200">Exclusive Cartoon Episodes</div>
+                <div class="text-xs text-slate-400 mt-1">Unlock ad-free unlimited streaming</div>
               </div>
 
-              <!-- 3. SCREEN VIEW B: ANDROID HOME SCREEN LAUNCHER (Safe State after Emergency Bounce) -->
-              <div id="homeScreenView" class="hidden absolute inset-0 pt-8 pb-10 flex flex-col justify-between bg-cover bg-center z-0 transition-opacity duration-300" style="background-image: radial-gradient(circle at top left, #1e1b4b, #090d16 80%);">
-                <!-- Wallpaper Overlay -->
-                <div class="absolute inset-0 bg-gradient-to-b from-transparent via-slate-950/30 to-slate-950/90 pointer-events-none"></div>
-
-                <!-- Top Home Widget -->
-                <div class="relative z-10 p-5 text-center mt-2">
-                  <h2 id="homeWidgetClock" class="text-4xl font-light tracking-tight text-white">12:30</h2>
-                  <p class="text-[11px] font-medium text-slate-300 mt-0.5">Sunday, September 13</p>
-
-                  <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/80 border border-emerald-500/40 text-[10px] text-emerald-300 mt-3 shadow-md">
-                    <i data-lucide="shield-check" class="w-3 h-3 text-emerald-400"></i>
-                    NovaSafe Protection Active &amp; Guarding
-                  </div>
+              <!-- Subscription / Payment Card (The Trap) -->
+              <div class="p-4 rounded-2xl bg-gradient-to-br from-amber-500/10 via-slate-800 to-indigo-950/80 border border-amber-500/30 text-center shadow-lg">
+                <div class="text-[10px] uppercase tracking-wider font-bold text-amber-400 mb-1">
+                  1-Tap AutoPay Subscription
+                </div>
+                <div class="text-lg font-black text-white">
+                  ₹199 <span class="text-xs font-normal text-slate-400">/ month recurring</span>
+                </div>
+                <div class="text-[11px] text-slate-400 mt-1 mb-3">
+                  Google Play Billing &bull; UPI Mandate
                 </div>
 
-                <!-- Grid of Installed Apps -->
-                <div class="relative z-10 px-4 grid grid-cols-4 gap-3 text-center">
-                  
-                  <!-- NovaSafe App Icon (Protected by Native App Lock) -->
-                  <div onclick="openNovaSafeApp()" class="flex flex-col items-center gap-1 cursor-pointer group">
-                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-600 to-indigo-900 border border-indigo-400/40 flex items-center justify-center shadow-lg group-hover:scale-105 active:scale-95 transition relative">
-                      <i data-lucide="shield" class="w-6 h-6 text-white"></i>
-                      <span class="absolute -top-1 -right-1 bg-amber-500 text-[8px] font-black rounded-full w-4 h-4 flex items-center justify-center text-slate-950 border border-white">
-                        <i data-lucide="lock" class="w-2.5 h-2.5"></i>
-                      </span>
-                    </div>
-                    <span class="text-[10px] text-slate-200 font-medium truncate w-full">NovaSafe</span>
-                  </div>
-
-                  <!-- StreamTube Kids (Re-open target app) -->
-                  <div onclick="openTargetApp()" class="flex flex-col items-center gap-1 cursor-pointer group">
-                    <div class="w-12 h-12 rounded-2xl bg-red-600 border border-red-400/30 flex items-center justify-center shadow-lg group-hover:scale-105 active:scale-95 transition">
-                      <i data-lucide="play" class="w-6 h-6 text-white fill-current"></i>
-                    </div>
-                    <span class="text-[10px] text-slate-200 font-medium truncate w-full">StreamTube</span>
-                  </div>
-
-                  <!-- System Settings (Protected against Uninstall Tampering) -->
-                  <div onclick="openSettingsApp()" class="flex flex-col items-center gap-1 cursor-pointer group">
-                    <div class="w-12 h-12 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center shadow-lg group-hover:scale-105 active:scale-95 transition">
-                      <i data-lucide="settings" class="w-6 h-6 text-slate-300"></i>
-                    </div>
-                    <span class="text-[10px] text-slate-200 font-medium truncate w-full">Settings</span>
-                  </div>
-
-                  <!-- Play Store (Blocked APK / Download Store) -->
-                  <div onclick="showPhoneToast('Play Store installations require parent authorization', 'info')" class="flex flex-col items-center gap-1 cursor-pointer group">
-                    <div class="w-12 h-12 rounded-2xl bg-emerald-600 border border-emerald-400/30 flex items-center justify-center shadow-lg group-hover:scale-105 active:scale-95 transition">
-                      <i data-lucide="shopping-bag" class="w-6 h-6 text-white"></i>
-                    </div>
-                    <span class="text-[10px] text-slate-200 font-medium truncate w-full">Play Store</span>
-                  </div>
-
+                <!-- TRIGGER BUTTON: Accidental Purchase Click -->
+                <button 
+                  id="btn-subscribe" 
+                  onclick="triggerNovaSafeLock()"
+                  class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 active:scale-95 text-slate-950 font-extrabold text-sm shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 transition cursor-pointer"
+                >
+                  <i data-lucide="zap" class="w-4 h-4 fill-current"></i>
+                  <span>Subscribe Now (1-Tap)</span>
+                </button>
+                <div class="text-[9px] text-slate-500 mt-2">
+                  *Accidental tap simulated here to test NovaSafe response.
                 </div>
-
-                <!-- Bottom App Dock -->
-                <div class="relative z-10 px-4 py-2 mx-3 mb-1 rounded-2xl bg-white/10 backdrop-blur-md flex justify-around items-center border border-white/15">
-                  <div class="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-white"><i data-lucide="phone" class="w-5 h-5"></i></div>
-                  <div class="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center text-white"><i data-lucide="message-square" class="w-5 h-5"></i></div>
-                  <div class="w-10 h-10 rounded-xl bg-zinc-800 flex items-center justify-center text-white"><i data-lucide="camera" class="w-5 h-5"></i></div>
-                </div>
-
               </div>
+            </div>
 
-              <!-- 4. CORE INNOVATION: ACTIVE SCREEN LOCKER (Overlay Window Layer) -->
-              <div id="activeScreenLockerOverlay" class="hidden absolute inset-0 pt-8 pb-8 px-4 flex-col justify-between bg-slate-950/96 backdrop-blur-2xl z-30 border-2 border-brand-500/60 shadow-2xl transition-all duration-300">
-                
-                <!-- Shield Header & Detection Badge -->
-                <div class="text-center pt-1">
-                  <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-brand-600/20 border border-bran
+            <!-- Bottom Ad Banner -->
+            <div class="text-center text-[10px] text-slate-500 py-1 border-t border-slate-800">
+              Child is watching videos &bull; No PIN required by game
+            </div>
+          </div>
+
+          <!-- SCREEN 2: Android Home Launcher Screen -->
+          <div id="view-home" class="absolute inset-0 flex flex-col justify-between p-6 bg-gradient-to-b from-sky-950 via-slate-900 to-slate-950 z-0 transition-all duration-300">
+            <div class="text-center pt-8">
+              <div class="text-4xl font-extralight text-slate-100" id="home-clock">12:30</div>
+              <div class="text-xs text-slate-400 mt-1">Safe Android Home Screen</div>
+            </div>
+
+            <!-- App Grid on Phone Home -->
+            <div class="grid grid-cols-4 gap-4 py-8">
+              <div onclick="openGameApp()" class="flex flex-col items-center gap-1.5 cursor-pointer group">
+                <div class="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-md group-hover:scale-105 transition">
+                  <i data-lucide="play" class="w-6 h-6 fill-white"></i>
+                </div>
+                <span class="text-[10px] text-slate-300">StreamZone</span>
+              </div>
+              <div onclick="triggerNovaSafeLock()" class="flex flex-col items-center gap-1.5 cursor-pointer group">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-600 flex items-center justify-center text-white shadow-md group-hover:scale-105 transition">
+                  <i data-lucide="shield-check" class="w-6 h-6"></i>
+                </div>
+                <span class="text-[10px] text-slate-300">NovaSafe</span>
+              </div>
+              <div class="flex flex-col items-center gap-1.5 opacity-60">
+                <div class="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-slate-400">
+                  <i data-lucide="camera" class="w-6 h-6"></i>
+                </div>
+                <span class="text-[10px] text-slate-400">Camera</span>
+              </div>
+              <div class="flex flex-col items-center gap-1.5 opacity-60">
+                <div class="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-slate-400">
+                  <i data-lucide="settings" class="w-6 h-6"></i>
+                </div>
+                <span class="text-[10px] text-slate-400">Settings</span>
+              </div>
+            </div>
+
+            <div class="text-center">
+              <button onclick="openGameApp()" class="px-4 py-2 rounded-xl bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-300 border border-indigo-500/30 text-xs font-semibold transition cursor-pointer">
+                Re-open StreamZone Video App
+              </button>
+            </div>
+          </div>
+
+          <!-- ACTIVE SCREEN LOCKER OVERLAY (NovaSafe Guard) -->
+          <div id="novasafe-overlay" class="absolute inset-0 bg-slate-950/95 backdrop-blur-xl z-50 flex flex-col justify-between p-6 opacity-0 pointer-events-none transition-all duration-300">
+            <!-- Shield Top Banner -->
+            <div class="text-center pt-2">
+              <div class="w-12 h-12 mx-auto rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 mb-2 shadow-lg shadow-emerald-500/20">
+                <i data-lucide="shield-alert" class="w-6 h-6"></i>
+              </div>
+              <h2 class="text-base font-bold text-white">NovaSafe Screen Locker</h2>
+              <p class="text-[11px] text-emerald-400 font-medium mt-0.5">Intercepted: AutoPay / Payment Gateway</p>
+            </div>
+
+            <!-- PIN Display -->
+            <div class="flex flex-col items-center my-auto">
+              <div class="text-[11px] text-slate-400 mb-3">Enter Parent Master PIN (Default: 4829)</div>
+              <div class="flex items-center gap-3 mb-4" id="pin-dots">
+                <div class="w-3.5 h-3.5 rounded-full border border-slate-600 bg-slate-800"></div>
+                <div class="w-3.5 h-3.5 rounded-full border border-slate-600 bg-slate-800"></div>
+                <div class="w-3.5 h-3.5 rounded-full border border-slate-600 bg-slate-800"></div>
+                <div class="w-3.5 h-3.5 rounded-full border border-slate-600 bg-slate-800"></div>
+              </div>
+              <div id="pin-status" class="text-xs text-slate-400 h-4 font-medium">Touch below is frozen</div>
+
+              <!-- 3x4 Number Keypad -->
+              <div class="grid grid-cols-3 gap-2.5 w-full max-w-[210px] mt-4">
+                <button onclick="enterDigit('1')" class="h-10 rounded-xl bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-slate-200 font-bold text-base transition">1</button>
+                <button onclick="enterDigit('2')" class="h-10 rounded-xl bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-slate-200 font-bold text-base transition">2</button>
+                <button onclick="enterDigit('3')" class="h-10 rounded-xl bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-slate-200 font-bold text-base transition">3</button>
+                <button onclick="enterDigit('4')" class="h-10 rounded-xl bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-slate-200 font-bold text-base transition">4</button>
+                <button onclick="enterDigit('5')" class="h-10 rounded-xl bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-slate-200 font-bold text-base transition">5</button>
+                <button onclick="enterDigit('6')" class="h-10 rounded-xl bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-slate-200 font-bold text-base transition">6</button>
+                <button onclick="enterDigit('7')" class="h-10 rounded-xl bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-slate-200 font-bold text-base transition">7</button>
+                <button onclick="enterDigit('8')" class="h-10 rounded-xl bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-slate-200 font-bold text-base transition">8</button>
+                <button onclick="enterDigit('9')" class="h-10 rounded-xl bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-slate-200 font-bold text-base transition">9</button>
+                <button onclick="clearPin()" class="h-10 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 font-semibold text-xs active:scale-95 transition">CLR</button>
+                <button onclick="enterDigit('0')" class="h-10 rounded-xl bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-slate-200 font-bold text-base transition">0</button>
+                <button onclick="quickBiometricUnlock()" title="Biometric Unlock" class="h-10 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 flex items-center justify-center active:scale-95 transition">
+                  <i data-lucide="fingerprint" class="w-5 h-5"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Failsafe Action: Emergency Bounce Home -->
+            <div class="space-y-2 pt-2">
+              <button 
+                id="btn-bounce-home"
+                onclick="emergencyBounceHome()"
+                class="w-full py-2.5 px-3 rounded-xl bg-rose-600/20 hover:bg-rose-600/30 active:scale-95 border border-rose-500/30 text-rose-300 font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer"
+              >
+                <i data-lucide="home" class="w-4 h-4"></i>
+                <span>Emergency Exit & Bounce to Home</span>
+              </button>
+              <p class="text-[10px] text-center text-slate-500">
+                Instantly closes transaction dialog & kills payment intent.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Android Gesture Bar -->
+        <div class="h-6 bg-slate-950 flex items-center justify-center shrink-0 z-30">
+          <div class="w-28 h-1 bg-slate-700 rounded-full"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RIGHT: Technical Presentation Panel & Judge Guide -->
+    <div class="lg:col-span-6 space-y-6">
+      
+      <!-- Interactive Controls Card -->
+      <div class="p-6 rounded-3xl bg-slate-900 border border-slate-800 shadow-xl">
+        <h3 class="text-base font-bold text-white flex items-center gap-2 mb-3">
+          <i data-lucide="sliders" class="w-5 h-5 text-emerald-400"></i>
+          Exhibition Demonstration Controls
+        </h3>
+        <p class="text-xs text-slate-400 mb-4">
+          Test both user workflows using the quick actions below:
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <button 
+            onclick="triggerNovaSafeLock()" 
+            class="py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 transition cursor-pointer"
+          >
+            <i data-lucide="shield-alert" class="w-4 h-4"></i>
+            <span>Simulate Payment Click</span>
+          </button>
+          <button 
+            onclick="emergencyBounceHome()" 
+            class="py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-200 font-bold text-xs flex items-center justify-center gap-2 border border-slate-700 transition cursor-pointer"
+          >
+            <i data-lucide="home" class="w-4 h-4 text-rose-400"></i>
+            <span>Trigger Bounce to Home</span>
+          </button>
+        </div>
+
+        <div class="mt-4 pt-4 border-t border-slate-800 flex items-center justify-between text-xs">
+          <span class="text-slate-400">Default Parent PIN:</span>
+          <span class="px-2.5 py-1 rounded bg-slate-800 font-mono font-bold text-emerald-400 border border-slate-700">4829</span>
+        </div>
+      </div>
+
+      <!-- Core Technical Pillars -->
+      <div class="p-6 rounded-3xl bg-slate-900/60 border border-slate-800/80 space-y-4">
+        <h3 class="text-sm font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
+          <i data-lucide="cpu" class="w-4 h-4 text-emerald-400"></i>
+          How NovaSafe Works Under the Hood
+        </h3>
+
+        <div class="space-y-3 text-xs text-slate-300">
+          <div class="flex items-start gap-3 p-3 rounded-2xl bg-slate-800/40 border border-slate-700/40">
+            <div class="w-7 h-7 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5">
+              1
+            </div>
+            <div>
+              <strong class="text-white block font-semibold">Active Screen Locker (Under 10ms)</strong>
+              Uses Android native <code class="text-emerald-400">TYPE_APPLICATION_OVERLAY</code> to freeze the touch screen immediately when payment intents or APK installer dialogs appear.
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3 p-3 rounded-2xl bg-slate-800/40 border border-slate-700/40">
+            <div class="w-7 h-7 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400 shrink-0 mt-0.5">
+              2
+            </div>
+            <div>
+              <strong class="text-white block font-semibold">Emergency Bounce Logic</strong>
+              If dismissed or canceled, NovaSafe fires <code class="text-indigo-400">Intent.CATEGORY_HOME</code>, minimizing the application to the launcher so money cannot be debited.
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3 p-3 rounded-2xl bg-slate-800/40 border border-slate-700/40">
+            <div class="w-7 h-7 rounded-lg bg-sky-500/20 flex items-center justify-center text-sky-400 shrink-0 mt-0.5">
+              3
+            </div>
+            <div>
+              <strong class="text-white block font-semibold">Native System App Lock & Zero Spying</strong>
+              Protected by Android's built-in Biometrics against uninstalls. Requires <strong class="text-emerald-400">0 camera, 0 microphone, and 0 location permissions</strong>—the green privacy dot never turns on.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Script Logic -->
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    const CORRECT_PIN = "4829";
+    let enteredPin = "";
+
+    // Clock update
+    function updateClock() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+      const lc = document.getElementById('live-clock');
+      const hc = document.getElementById('home-clock');
+      if (lc) lc.textContent = timeStr;
+      if (hc) hc.textContent = timeStr;
+    }
+    updateClock();
+    setInterval(updateClock, 30000);
+
+    // 1. TRIGGER THE ACTIVE SCREEN LOCKER
+    function triggerNovaSafeLock() {
+      const overlay = document.getElementById('novasafe-overlay');
+      if (!overlay) return;
+      
+      overlay.classList.remove('opacity-0', 'pointer-events-none');
+      overlay.classList.add('opacity-100', 'pointer-events-auto');
+      clearPin();
+      
+      const status = document.getElementById('pin-status');
+      if (status) {
+        status.textContent = "Touch below is frozen. Enter PIN.";
+        status.className = "text-xs text-amber-400 h-4 font-medium";
+      }
+    }
+
+    // 2. EMERGENCY BOUNCE HOME
+    function emergencyBounceHome() {
+      const overlay = document.getElementById('novasafe-overlay');
+      const viewGame = document.getElementById('view-game');
+      const viewHome = document.getElementById('view-home');
+
+      // Hide overlay
+      if (overlay) {
+        overlay.classList.remove('opacity-100', 'pointer-events-auto');
+        overlay.classList.add('opacity-0', 'pointer-events-none');
+      }
+
+      // Hide game, show Android Home
+      if (viewGame) viewGame.classList.add('opacity-0', 'pointer-events-none');
+      if (viewHome) {
+        viewHome.classList.remove('opacity-0', 'pointer-events-n
