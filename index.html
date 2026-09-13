@@ -18,11 +18,11 @@
   <!-- Header -->
   <header class="text-center max-w-xl mb-6">
     <div class="inline-block px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-xs font-bold uppercase tracking-wider mb-2">
-      INSPIRE-MANAK Prototype
+      INSPIRE-MANAK Working Prototype
     </div>
     <h1 class="text-3xl font-extrabold text-white">NovaSafe Mobile Shield</h1>
     <p class="text-slate-400 text-sm mt-1">
-      Tap <strong class="text-amber-400">"Subscribe Now"</strong> inside the phone to see the screen locker freeze the payment!
+      AutoPay Interceptor, Active Screen Locker &amp; Daily Screen Time Guard
     </p>
   </header>
 
@@ -44,6 +44,7 @@
         <!-- VIEW 1: GAME / VIDEO APP (DEFAULT) -->
         <div id="gameView" class="absolute inset-0 flex flex-col justify-between p-4 bg-gradient-to-b from-indigo-950 to-slate-950 z-10">
           
+          <!-- App Top Bar with Active Screen Time Counter -->
           <div class="flex items-center justify-between border-b border-indigo-900/60 pb-2">
             <div class="flex items-center gap-2">
               <div class="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-white text-xs">
@@ -51,10 +52,15 @@
               </div>
               <span class="text-xs font-bold text-slate-200">KidsZone Video</span>
             </div>
-            <span class="text-[10px] px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300">Free Mode</span>
+            
+            <!-- Live Screen Time Badge -->
+            <div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/30 text-amber-300 text-[10px] font-bold">
+              <span>⏳</span>
+              <span id="screenTimerDisplay">15:00 left</span>
+            </div>
           </div>
 
-          <!-- The Accidental Trap Box -->
+          <!-- The Accidental Subscription Trap Box -->
           <div class="my-auto bg-slate-900/90 border-2 border-amber-500/40 rounded-2xl p-4 text-center shadow-xl">
             <div class="text-xs font-bold uppercase tracking-wider text-amber-400">
               ⚠️ 1-Tap AutoPay Trap
@@ -66,22 +72,32 @@
               YouTube Premium / OTT Trial Pop-up
             </p>
 
-            <!-- THIS IS THE BUTTON -->
+            <!-- TRIGGER 1: Accidental Payment Tap -->
             <button 
               id="payBtn"
-              onclick="showNovaLocker()"
+              onclick="showPaymentLocker()"
               style="cursor: pointer;"
-              class="w-full py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 active:bg-amber-600 text-slate-950 font-black text-sm tracking-wide shadow-lg transition transform active:scale-95"
+              class="w-full py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 active:bg-amber-600 text-slate-950 font-black text-sm tracking-wide shadow-lg transition transform active:scale-95 mb-2"
             >
               ⚡ Subscribe Now (1-Tap)
             </button>
-            <div class="text-[10px] text-slate-500 mt-2">
-              (Simulating a child accidentally tapping pay)
+
+            <!-- TRIGGER 2: Screen Time Limit Button directly inside app -->
+            <button 
+              onclick="showScreenTimeLocker()"
+              style="cursor: pointer;"
+              class="w-full py-2 px-3 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-300 font-bold text-xs transition"
+            >
+              ⏱️ Trigger Screen Time Limit (00:00)
+            </button>
+
+            <div class="text-[9px] text-slate-500 mt-2">
+              (Simulating child tapping payment or session expiring)
             </div>
           </div>
 
           <div class="text-center text-[11px] text-slate-500 pb-2">
-            Normal game playing...
+            Normal video running &bull; NovaSafe monitoring in background
           </div>
         </div>
 
@@ -97,7 +113,7 @@
               <div class="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center text-white font-bold mb-1">▶</div>
               <span class="text-[10px] text-slate-300">KidsZone</span>
             </div>
-            <div onclick="showNovaLocker()" class="cursor-pointer flex flex-col items-center">
+            <div onclick="showPaymentLocker()" class="cursor-pointer flex flex-col items-center">
               <div class="w-12 h-12 rounded-2xl bg-emerald-600 flex items-center justify-center text-white font-bold mb-1">🛡️</div>
               <span class="text-[10px] text-slate-300">NovaSafe</span>
             </div>
@@ -112,14 +128,15 @@
           </button>
         </div>
 
-        <!-- VIEW 3: NOVASAFE ACTIVE SCREEN LOCKER (HIDDEN BY DEFAULT) -->
+        <!-- VIEW 3: NOVASAFE ACTIVE SCREEN LOCKER (Payment or Screen Time) -->
         <div id="lockerOverlay" style="display: none;" class="absolute inset-0 bg-slate-950/95 backdrop-blur-md z-50 flex flex-col justify-between p-5">
+          
           <div class="text-center pt-2">
-            <div class="w-10 h-10 mx-auto rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-lg mb-1">
+            <div id="lockerIcon" class="w-10 h-10 mx-auto rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-lg mb-1">
               🛡️
             </div>
-            <div class="text-sm font-bold text-white">NovaSafe Screen Locker</div>
-            <div class="text-[10px] text-emerald-400">Blocked: AutoPay / Google Play Billing</div>
+            <div id="lockerTitle" class="text-sm font-bold text-white">NovaSafe Screen Locker</div>
+            <div id="lockerSubtitle" class="text-[10px] text-emerald-400">Blocked: AutoPay / Google Play Billing</div>
           </div>
 
           <!-- PIN Pad -->
@@ -158,7 +175,7 @@
               🚨 Emergency Exit & Bounce Home
             </button>
             <div class="text-[9px] text-center text-slate-500">
-              Immediately drops transaction dialog to phone home.
+              Safely exits to home screen & kills active session.
             </div>
           </div>
         </div>
@@ -174,13 +191,19 @@
     <!-- RIGHT: CONTROLS & EXPLANATION FOR JUDGES -->
     <div class="space-y-4 max-w-sm">
       <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800">
-        <h2 class="text-sm font-bold text-white mb-2">Exhibition Quick Test:</h2>
+        <h2 class="text-sm font-bold text-white mb-2">Exhibition Live Controls:</h2>
         <div class="space-y-2">
-          <button onclick="showNovaLocker()" class="w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs">
-            Trigger Lock Screen
+          <button onclick="showPaymentLocker()" class="w-full py-2.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs text-left flex items-center justify-between">
+            <span>⚡ Test 1-Tap Payment Trap</span>
+            <span>&rarr;</span>
           </button>
-          <button onclick="bounceToHome()" class="w-full py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs">
-            Trigger Bounce to Home
+          <button onclick="showScreenTimeLocker()" class="w-full py-2.5 px-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs text-left flex items-center justify-between">
+            <span>⏱️ Test Screen Time Limit Expiry</span>
+            <span>&rarr;</span>
+          </button>
+          <button onclick="bounceToHome()" class="w-full py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs text-left flex items-center justify-between">
+            <span>🚨 Test Emergency Bounce to Home</span>
+            <span>&rarr;</span>
           </button>
         </div>
         <div class="mt-3 text-xs text-slate-400 border-t border-slate-800 pt-2 flex justify-between">
@@ -189,11 +212,14 @@
         </div>
       </div>
 
-      <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 text-xs text-slate-300 space-y-2">
-        <div class="font-bold text-white text-sm">How NovaSafe Works:</div>
-        <p>1. Catches payment gateways with <code>TYPE_APPLICATION_OVERLAY</code> in under 10ms.</p>
-        <p>2. Freezes touch to protect recurring UPI / YouTube subscriptions.</p>
-        <p>3. Zero hardware sensors used — <strong>No green privacy dot</strong> ever appears.</p>
+      <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 text-xs text-slate-300 space-y-2.5">
+        <div class="font-bold text-white text-sm flex items-center gap-1.5">
+          <span>🛡️</span> NovaSafe Defense Features:
+        </div>
+        <p><strong>1. Payment Shield:</strong> Blocks UPI AutoPay, Google Play Billing &amp; OTT subscriptions in &lt;10ms.</p>
+        <p><strong>2. Screen Time Locker:</strong> Enforces daily limits without invasive screen tracking or content spying.</p>
+        <p><strong>3. Emergency Bounce:</strong> Direct <code class="text-indigo-400">Intent.CATEGORY_HOME</code> failsafe to exit cleanly.</p>
+        <p><strong>4. Privacy Guaranteed:</strong> 0 Camera, 0 Mic — <strong>No green privacy dot</strong> ever turns on.</p>
       </div>
     </div>
 
@@ -201,14 +227,50 @@
 
   <script>
     let pinCode = "";
+    let lockReason = "payment"; // 'payment' or 'screentime'
+    let timeLeftSeconds = 900; // 15 minutes default timer
 
-    function showNovaLocker() {
+    // Countdown simulation for Screen Time
+    setInterval(() => {
+      if (timeLeftSeconds > 0) {
+        timeLeftSeconds--;
+        const mins = Math.floor(timeLeftSeconds / 60);
+        const secs = timeLeftSeconds % 60;
+        const display = document.getElementById('screenTimerDisplay');
+        if (display) {
+          display.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs} left`;
+        }
+      } else if (timeLeftSeconds === 0) {
+        showScreenTimeLocker();
+        timeLeftSeconds = -1; // stop auto-trigger loop
+      }
+    }, 1000);
+
+    // 1. TRIGGER PAYMENT LOCKER
+    function showPaymentLocker() {
+      lockReason = "payment";
+      document.getElementById('lockerIcon').innerText = "🛡️";
+      document.getElementById('lockerTitle').innerText = "NovaSafe Payment Shield";
+      document.getElementById('lockerSubtitle').innerText = "Blocked: AutoPay / Google Play Billing";
       document.getElementById('lockerOverlay').style.display = 'flex';
       resetPin();
-      document.getElementById('pinMsg').innerText = "Touch below is frozen";
+      document.getElementById('pinMsg').innerText = "Payment blocked. Enter PIN.";
       document.getElementById('pinMsg').className = "text-xs h-4 font-bold text-amber-400";
     }
 
+    // 2. TRIGGER SCREEN TIME LOCKER
+    function showScreenTimeLocker() {
+      lockReason = "screentime";
+      document.getElementById('lockerIcon').innerText = "⏱️";
+      document.getElementById('lockerTitle').innerText = "Screen Time Limit Reached";
+      document.getElementById('lockerSubtitle').innerText = "Daily limit reached for KidsZone Video";
+      document.getElementById('lockerOverlay').style.display = 'flex';
+      resetPin();
+      document.getElementById('pinMsg').innerText = "Screen locked. Parent PIN required.";
+      document.getElementById('pinMsg').className = "text-xs h-4 font-bold text-rose-400";
+    }
+
+    // 3. EMERGENCY BOUNCE
     function bounceToHome() {
       document.getElementById('lockerOverlay').style.display = 'none';
       document.getElementById('gameView').style.display = 'none';
@@ -216,6 +278,7 @@
       resetPin();
     }
 
+    // 4. REOPEN APP
     function reopenGame() {
       document.getElementById('lockerOverlay').style.display = 'none';
       document.getElementById('homeView').style.display = 'none';
@@ -223,16 +286,22 @@
       resetPin();
     }
 
+    // 5. PIN HANDLING
     function typePin(digit) {
       if (pinCode.length < 4) {
         pinCode += digit;
         updateDots();
         if (pinCode.length === 4) {
           if (pinCode === "4829") {
-            document.getElementById('pinMsg').innerText = "✓ Authorized! Unlocking...";
+            const successMsg = lockReason === "screentime" ? "✓ Time Extended (+30m)!" : "✓ Authorized! Unlocking...";
+            document.getElementById('pinMsg').innerText = successMsg;
             document.getElementById('pinMsg').className = "text-xs h-4 font-bold text-emerald-400";
+            
             setTimeout(() => {
               document.getElementById('lockerOverlay').style.display = 'none';
+              if (lockReason === "screentime") {
+                timeLeftSeconds = 1800; // grant +30 mins
+              }
               resetPin();
             }, 600);
           } else {
@@ -254,6 +323,9 @@
       document.getElementById('pinMsg').className = "text-xs h-4 font-bold text-emerald-400";
       setTimeout(() => {
         document.getElementById('lockerOverlay').style.display = 'none';
+        if (lockReason === "screentime") {
+          timeLeftSeconds = 1800;
+        }
         resetPin();
       }, 500);
     }
