@@ -22,7 +22,7 @@
     </div>
     <h1 class="text-3xl font-extrabold text-white">NovaSafe Mobile Shield</h1>
     <p class="text-slate-400 text-sm mt-1">
-      AutoPay Interceptor, Active Screen Locker &amp; Daily Screen Time Guard
+      AutoPay Protection &amp; Strict Screen Time Enforcer
     </p>
   </header>
 
@@ -41,10 +41,10 @@
       <!-- Phone Viewport -->
       <div class="relative flex-1 w-full overflow-hidden bg-slate-950">
 
-        <!-- VIEW 1: GAME / VIDEO APP (DEFAULT) -->
+        <!-- VIEW 1: GAME / VIDEO APP -->
         <div id="gameView" class="absolute inset-0 flex flex-col justify-between p-4 bg-gradient-to-b from-indigo-950 to-slate-950 z-10">
           
-          <!-- App Top Bar with Active Screen Time Counter -->
+          <!-- App Top Bar with Screen Time Counter -->
           <div class="flex items-center justify-between border-b border-indigo-900/60 pb-2">
             <div class="flex items-center gap-2">
               <div class="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-white text-xs">
@@ -53,14 +53,13 @@
               <span class="text-xs font-bold text-slate-200">KidsZone Video</span>
             </div>
             
-            <!-- Live Screen Time Badge -->
             <div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/30 text-amber-300 text-[10px] font-bold">
               <span>⏳</span>
               <span id="screenTimerDisplay">15:00 left</span>
             </div>
           </div>
 
-          <!-- The Accidental Subscription Trap Box -->
+          <!-- Subscription Trap Card -->
           <div class="my-auto bg-slate-900/90 border-2 border-amber-500/40 rounded-2xl p-4 text-center shadow-xl">
             <div class="text-xs font-bold uppercase tracking-wider text-amber-400">
               ⚠️ 1-Tap AutoPay Trap
@@ -72,7 +71,7 @@
               YouTube Premium / OTT Trial Pop-up
             </p>
 
-            <!-- TRIGGER 1: Accidental Payment Tap -->
+            <!-- TRIGGER 1: Payment Tap -->
             <button 
               id="payBtn"
               onclick="showPaymentLocker()"
@@ -82,7 +81,7 @@
               ⚡ Subscribe Now (1-Tap)
             </button>
 
-            <!-- TRIGGER 2: Screen Time Limit Button directly inside app -->
+            <!-- TRIGGER 2: Screen Time Limit Button -->
             <button 
               onclick="showScreenTimeLocker()"
               style="cursor: pointer;"
@@ -92,12 +91,12 @@
             </button>
 
             <div class="text-[9px] text-slate-500 mt-2">
-              (Simulating child tapping payment or session expiring)
+              (Test Payment vs Screen Time locker behaviors)
             </div>
           </div>
 
           <div class="text-center text-[11px] text-slate-500 pb-2">
-            Normal video running &bull; NovaSafe monitoring in background
+            Child is using app &bull; NovaSafe monitoring in background
           </div>
         </div>
 
@@ -128,7 +127,7 @@
           </button>
         </div>
 
-        <!-- VIEW 3: NOVASAFE ACTIVE SCREEN LOCKER (Payment or Screen Time) -->
+        <!-- VIEW 3: NOVASAFE ACTIVE SCREEN LOCKER -->
         <div id="lockerOverlay" style="display: none;" class="absolute inset-0 bg-slate-950/95 backdrop-blur-md z-50 flex flex-col justify-between p-5">
           
           <div class="text-center pt-2">
@@ -166,17 +165,9 @@
             </div>
           </div>
 
-          <!-- Emergency Bounce Button -->
-          <div class="space-y-1">
-            <button 
-              onclick="bounceToHome()" 
-              class="w-full py-2 px-3 rounded-xl bg-rose-600/30 border border-rose-500/40 hover:bg-rose-600/50 text-rose-200 font-bold text-xs"
-            >
-              🚨 Emergency Exit & Bounce Home
-            </button>
-            <div class="text-[9px] text-center text-slate-500">
-              Safely exits to home screen & kills active session.
-            </div>
+          <!-- DYNAMIC BOTTOM ACTION: Switches between Emergency Bounce vs Strict Lock -->
+          <div id="lockerBottomSection" class="space-y-1">
+            <!-- Populated via JavaScript depending on lock type -->
           </div>
         </div>
 
@@ -201,10 +192,6 @@
             <span>⏱️ Test Screen Time Limit Expiry</span>
             <span>&rarr;</span>
           </button>
-          <button onclick="bounceToHome()" class="w-full py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs text-left flex items-center justify-between">
-            <span>🚨 Test Emergency Bounce to Home</span>
-            <span>&rarr;</span>
-          </button>
         </div>
         <div class="mt-3 text-xs text-slate-400 border-t border-slate-800 pt-2 flex justify-between">
           <span>Parent Master PIN:</span>
@@ -214,12 +201,11 @@
 
       <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 text-xs text-slate-300 space-y-2.5">
         <div class="font-bold text-white text-sm flex items-center gap-1.5">
-          <span>🛡️</span> NovaSafe Defense Features:
+          <span>🛡️</span> Key Architectural Insights:
         </div>
-        <p><strong>1. Payment Shield:</strong> Blocks UPI AutoPay, Google Play Billing &amp; OTT subscriptions in &lt;10ms.</p>
-        <p><strong>2. Screen Time Locker:</strong> Enforces daily limits without invasive screen tracking or content spying.</p>
-        <p><strong>3. Emergency Bounce:</strong> Direct <code class="text-indigo-400">Intent.CATEGORY_HOME</code> failsafe to exit cleanly.</p>
-        <p><strong>4. Privacy Guaranteed:</strong> 0 Camera, 0 Mic — <strong>No green privacy dot</strong> ever turns on.</p>
+        <p><strong>Payment Trap:</strong> Includes <em>Emergency Bounce</em> so a child can safely back out without completing the purchase.</p>
+        <p><strong>Screen Time Limit:</strong> <em>No Emergency Exit allowed!</em> Prevents kids from bypassing limits by returning home to open another app. Only parent PIN/biometrics or SOS can unlock.</p>
+        <p><strong>Zero Sensor Access:</strong> 0 Camera, 0 Mic — <strong>No green privacy dot</strong> ever triggers.</p>
       </div>
     </div>
 
@@ -228,7 +214,7 @@
   <script>
     let pinCode = "";
     let lockReason = "payment"; // 'payment' or 'screentime'
-    let timeLeftSeconds = 900; // 15 minutes default timer
+    let timeLeftSeconds = 900;
 
     // Countdown simulation for Screen Time
     setInterval(() => {
@@ -242,35 +228,64 @@
         }
       } else if (timeLeftSeconds === 0) {
         showScreenTimeLocker();
-        timeLeftSeconds = -1; // stop auto-trigger loop
+        timeLeftSeconds = -1;
       }
     }, 1000);
 
-    // 1. TRIGGER PAYMENT LOCKER
+    // 1. TRIGGER PAYMENT LOCKER (Has Emergency Bounce)
     function showPaymentLocker() {
       lockReason = "payment";
       document.getElementById('lockerIcon').innerText = "🛡️";
       document.getElementById('lockerTitle').innerText = "NovaSafe Payment Shield";
       document.getElementById('lockerSubtitle').innerText = "Blocked: AutoPay / Google Play Billing";
+      
+      // Render Emergency Bounce for payments
+      document.getElementById('lockerBottomSection').innerHTML = `
+        <button 
+          onclick="bounceToHome()" 
+          class="w-full py-2 px-3 rounded-xl bg-rose-600/30 border border-rose-500/40 hover:bg-rose-600/50 text-rose-200 font-bold text-xs"
+        >
+          🚨 Emergency Exit & Bounce Home
+        </button>
+        <div class="text-[9px] text-center text-slate-500">
+          Cancels purchase and returns cleanly to safe Home screen.
+        </div>
+      `;
+
       document.getElementById('lockerOverlay').style.display = 'flex';
       resetPin();
       document.getElementById('pinMsg').innerText = "Payment blocked. Enter PIN.";
       document.getElementById('pinMsg').className = "text-xs h-4 font-bold text-amber-400";
     }
 
-    // 2. TRIGGER SCREEN TIME LOCKER
+    // 2. TRIGGER SCREEN TIME LOCKER (NO Emergency Bounce!)
     function showScreenTimeLocker() {
       lockReason = "screentime";
       document.getElementById('lockerIcon').innerText = "⏱️";
       document.getElementById('lockerTitle').innerText = "Screen Time Limit Reached";
       document.getElementById('lockerSubtitle').innerText = "Daily limit reached for KidsZone Video";
+      
+      // Render Strict Lock (NO Bounce to Home, only SOS simulation)
+      document.getElementById('lockerBottomSection').innerHTML = `
+        <div class="p-2 rounded-xl bg-rose-950/40 border border-rose-500/30 text-center">
+          <span class="text-rose-400 font-bold text-[11px] block">🔒 Strict Enforcer Active</span>
+          <span class="text-slate-400 text-[9px]">Emergency exit disabled to prevent limit bypass.</span>
+        </div>
+        <button 
+          onclick="alert('Emergency SOS: Calling Emergency Services (112)...')" 
+          class="w-full py-1.5 px-3 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 font-semibold text-[10px]"
+        >
+          📞 Emergency SOS Only
+        </button>
+      `;
+
       document.getElementById('lockerOverlay').style.display = 'flex';
       resetPin();
-      document.getElementById('pinMsg').innerText = "Screen locked. Parent PIN required.";
+      document.getElementById('pinMsg').innerText = "Strict Lock. Enter Parent PIN.";
       document.getElementById('pinMsg').className = "text-xs h-4 font-bold text-rose-400";
     }
 
-    // 3. EMERGENCY BOUNCE
+    // 3. EMERGENCY BOUNCE (Payment only)
     function bounceToHome() {
       document.getElementById('lockerOverlay').style.display = 'none';
       document.getElementById('gameView').style.display = 'none';
