@@ -1,310 +1,365 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NovaSafe Mobile Shield — Complete Exhibition Prototype</title>
-  <!-- Tailwind CSS CDN -->
+  <title>NovaSafe Working Prototype</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .phone-shadow {
-      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.6), 0 0 0 10px #1e293b, 0 0 0 12px #334155;
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .phone-shell {
+      box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 0 0 10px #1e293b;
     }
-    /* Hide scrollbar for clean phone display */
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center py-6 px-4 selection:bg-emerald-500 selection:text-white antialiased">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center py-6 px-4">
 
-  <!-- Header Section -->
-  <header class="text-center max-w-3xl mb-6">
-    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-bold uppercase tracking-wider mb-2">
-      <i data-lucide="award" class="w-3.5 h-3.5"></i> INSPIRE-MANAK Scheme Prototype
-    </div>
-    <h1 class="text-3xl sm:text-4xl font-black tracking-tight text-white">
-      NovaSafe <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-indigo-400">Mobile Shield</span>
-    </h1>
-    <p class="text-slate-400 text-xs sm:text-sm mt-1.5 max-w-xl mx-auto">
-      On-Device Child Safety: Active Payment Interceptor, Strict Screen Time, Bedtime Blackout &amp; Non-Intrusive Parent Dashboard.
-    </p>
-  </header>
+  <!-- Header -->
+  <div class="text-center max-w-xl mb-4">
+    <span class="px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-xs font-bold uppercase tracking-wider">
+      INSPIRE-MANAK Final Prototype
+    </span>
+    <h1 class="text-2xl sm:text-3xl font-black text-white mt-2">NovaSafe Mobile Shield</h1>
+    <p class="text-slate-400 text-xs sm:text-sm mt-1">Interactive Android safety simulator. Tap buttons to test each scenario.</p>
+  </div>
 
-  <!-- Main Container: Phone Simulator + Judges Control & Telemetry Panel -->
-  <main class="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-start justify-items-center">
+  <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6 items-start justify-items-center">
 
-    <!-- LEFT COLUMN: Android Phone Frame (Col 5.5) -->
-    <div class="lg:col-span-6 flex flex-col items-center w-full max-w-sm">
+    <!-- PHONE CONTAINER -->
+    <div class="relative w-[320px] h-[640px] bg-slate-900 rounded-[44px] overflow-hidden phone-shell border-4 border-slate-700 flex flex-col select-none">
       
-      <!-- Phone Mode Switcher Bar -->
-      <div class="w-full mb-3 flex items-center justify-between px-2 text-xs">
-        <span class="text-slate-400 font-semibold flex items-center gap-1">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Virtual Phone
-        </span>
-        <div class="flex bg-slate-900 p-0.5 rounded-xl border border-slate-800 text-[11px]">
-          <button id="tabPhoneApp" onclick="switchPhoneScreen('game')" class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white font-bold transition">Target App</button>
-          <button id="tabPhoneHome" onclick="switchPhoneScreen('home')" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition">Home</button>
-          <button id="tabPhoneDash" onclick="switchPhoneScreen('dashboard')" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition">Dashboard</button>
+      <!-- Top Android Status Bar -->
+      <div class="h-8 bg-slate-950 px-5 flex items-center justify-between text-xs text-slate-400 shrink-0 z-30">
+        <span class="font-bold text-slate-200">12:30</span>
+        <div class="w-3.5 h-3.5 rounded-full bg-black border border-slate-800"></div>
+        <span>5G &#9679; 94%</span>
+      </div>
+
+      <!-- Live Notification Banner (For "Ask Parent" Approval) -->
+      <div id="notifBanner" style="display: none;" class="absolute top-10 left-3 right-3 bg-slate-800/95 border border-emerald-500/60 rounded-2xl p-3 shadow-2xl z-50 flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm shrink-0">✓</div>
+        <div class="flex-1">
+          <div class="text-[11px] font-bold text-white">Parent Companion Ping</div>
+          <div class="text-[10px] text-emerald-300">Request Approved: +15 Mins Screen Time Added!</div>
         </div>
       </div>
 
-      <!-- Phone Outer Casing -->
-      <div class="relative w-[340px] h-[670px] bg-slate-900 rounded-[48px] overflow-hidden phone-shadow border-4 border-slate-700 flex flex-col select-none">
-        
-        <!-- Status Bar -->
-        <div class="h-9 bg-slate-950 px-5 flex items-center justify-between text-xs text-slate-400 shrink-0 z-30">
-          <span id="phoneClock" class="font-bold text-slate-200">12:30</span>
-          <!-- Punch Hole Camera (Zero hardware green dot) -->
-          <div class="flex items-center gap-1.5">
-            <div class="w-3.5 h-3.5 rounded-full bg-black border border-slate-800"></div>
-            <!-- Hardware Green dot stays 0% inactive to prove 0 spying -->
-            <div id="greenPrivacyDot" class="hidden w-2 h-2 rounded-full bg-emerald-500 animate-ping" title="Hardware Mic/Cam Active"></div>
-          </div>
-          <div class="flex items-center gap-1.5 text-[11px]">
-            <i data-lucide="wifi" class="w-3 h-3 text-slate-300"></i>
-            <span class="font-mono text-[10px]">95%</span>
-            <i data-lucide="battery" class="w-3.5 h-3.5 text-emerald-400"></i>
-          </div>
-        </div>
+      <!-- MAIN PHONE SCREEN AREA -->
+      <div class="relative flex-1 w-full overflow-hidden bg-slate-950">
 
-        <!-- Phone In-Screen Notifications Toast (Simulates "Ask Parent" approval) -->
-        <div id="parentApprovedToast" style="display: none;" class="absolute top-11 left-3 right-3 bg-slate-900/95 border border-emerald-500/60 rounded-2xl p-3 shadow-2xl z-50 flex items-start gap-2.5 backdrop-blur-md transition-all">
-          <div class="w-7 h-7 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
-            <i data-lucide="check-circle" class="w-4 h-4"></i>
-          </div>
-          <div class="flex-1">
-            <div class="text-[11px] font-bold text-emerald-400 flex items-center justify-between">
-              <span>NovaSafe Parent Approval</span>
-              <span class="text-[9px] text-slate-400">Just now</span>
+        <!-- 1. VIDEO / GAME APP SCREEN (DEFAULT) -->
+        <div id="screenGame" class="w-full h-full flex flex-col justify-between p-4 bg-gradient-to-b from-indigo-950 to-slate-950">
+          <!-- App Header -->
+          <div class="flex items-center justify-between border-b border-indigo-900/60 pb-2">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-indigo-600 flex items-center justify-center text-xs font-bold">▶</span>
+              <span class="text-xs font-bold text-white">KidsZone Video</span>
             </div>
-            <p id="toastMessage" class="text-[10px] text-slate-200 mt-0.5 leading-snug">Parent remotely approved <strong>+15 Minutes</strong> of screen time!</p>
-          </div>
-        </div>
-
-        <!-- PHONE VIEWPORT (Dynamic Stack) -->
-        <div class="relative flex-1 w-full overflow-hidden bg-slate-950">
-          
-          <!-- VIEW A: STREAMING / GAME APP (With Payment Trap) -->
-          <div id="viewGame" class="absolute inset-0 flex flex-col justify-between p-4 bg-gradient-to-b from-indigo-950 via-slate-900 to-slate-950 z-10">
-            <!-- App Top Bar -->
-            <div class="flex items-center justify-between border-b border-indigo-900/60 pb-2">
-              <div class="flex items-center gap-2">
-                <div class="w-7 h-7 rounded-lg bg-red-600 flex items-center justify-center font-bold text-white text-xs shadow-md">
-                  <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
-                </div>
-                <div>
-                  <span class="text-xs font-bold text-slate-200 block leading-tight">StreamKids TV</span>
-                  <span class="text-[9px] text-slate-400">Cartoon Championship</span>
-                </div>
-              </div>
-
-              <!-- Live Screen Timer Pill -->
-              <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-[10px] font-bold">
-                <i data-lucide="clock" class="w-3 h-3"></i>
-                <span id="screenTimerDisplay">15:00 left</span>
-              </div>
-            </div>
-
-            <!-- Simulated Video Box -->
-            <div class="w-full aspect-video rounded-2xl bg-indigo-900/30 border border-indigo-700/30 flex flex-col items-center justify-center p-3 text-center my-auto relative overflow-hidden">
-              <div class="w-10 h-10 rounded-full bg-white/10 backdrop-blur border border-white/20 flex items-center justify-center text-white mb-1.5 animate-pulse">
-                <i data-lucide="film" class="w-5 h-5 text-indigo-300"></i>
-              </div>
-              <div class="text-xs font-bold text-white drop-shadow">Episode 4: Superhero Academy</div>
-              <div class="text-[10px] text-slate-400 mt-0.5">Playing in Safe Child Profile</div>
-            </div>
-
-            <!-- Accidental Payment & Limit Traps Container -->
-            <div class="bg-slate-900/90 border border-amber-500/40 rounded-2xl p-3.5 text-center shadow-2xl">
-              <div class="flex items-center justify-between mb-1">
-                <span class="text-[10px] font-black uppercase tracking-wider text-amber-400 flex items-center gap-1">
-                  <i data-lucide="zap" class="w-3 h-3"></i> AutoPay Subscription Trap
-                </span>
-                <span class="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">₹199 / mo</span>
-              </div>
-              <p class="text-[10px] text-slate-400 leading-tight mb-2.5 text-left">
-                Accidental child tap will initiate UPI AutoPay mandate without parent consent.
-              </p>
-
-              <!-- TRIGGER 1: Accidental Payment Click -->
-              <button 
-                id="btnPayTrap"
-                onclick="triggerPaymentShield()"
-                class="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 active:scale-95 text-slate-950 font-extrabold text-xs shadow-lg shadow-amber-500/20 flex items-center justify-center gap-1.5 transition cursor-pointer"
-              >
-                <i data-lucide="credit-card" class="w-3.5 h-3.5 fill-current"></i>
-                <span>Tap to Subscribe (1-Click AutoPay)</span>
-              </button>
-
-              <!-- Quick Mini Trigger for Screen Time -->
-              <div class="grid grid-cols-2 gap-1.5 mt-2">
-                <button 
-                  onclick="triggerScreenTimeLock()"
-                  class="py-1.5 px-2 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-300 font-bold text-[10px] transition"
-                >
-                  ⏱️ Hit Time Limit
-                </button>
-                <button 
-                  onclick="triggerBedtimeBlackout()"
-                  class="py-1.5 px-2 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-500/40 text-indigo-300 font-bold text-[10px] transition"
-                >
-                  🌙 Test Bedtime Lock
-                </button>
-              </div>
-            </div>
-
-            <div class="text-center text-[9px] text-slate-500 pt-1">
-              NovaSafe background interceptor active &bull; Event-driven
+            <div class="px-2 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/30 text-amber-300 text-[10px] font-bold">
+              ⏳ <span id="timerText">15:00 left</span>
             </div>
           </div>
 
-          <!-- VIEW B: ANDROID HOME SCREEN LAUNCHER -->
-          <div id="viewHome" style="display: none;" class="absolute inset-0 flex flex-col justify-between p-6 bg-gradient-to-b from-sky-950 via-slate-900 to-slate-950 z-0">
-            <div class="text-center pt-6">
-              <div class="text-4xl font-extralight text-white tracking-tight" id="homeClockDisplay">12:30</div>
-              <div class="text-xs text-emerald-400 font-medium mt-1 flex items-center justify-center gap-1">
-                <i data-lucide="check" class="w-3.5 h-3.5"></i> Safe Android Home Screen
-              </div>
-            </div>
-
-            <!-- Home App Grid -->
-            <div class="grid grid-cols-3 gap-4 text-center my-auto">
-              <div onclick="switchPhoneScreen('game')" class="flex flex-col items-center gap-1 cursor-pointer group">
-                <div class="w-12 h-12 rounded-2xl bg-red-600 flex items-center justify-center text-white shadow-lg group-hover:scale-105 transition">
-                  <i data-lucide="play" class="w-6 h-6 fill-current"></i>
-                </div>
-                <span class="text-[10px] text-slate-200">StreamKids</span>
-              </div>
-              <div onclick="switchPhoneScreen('dashboard')" class="flex flex-col items-center gap-1 cursor-pointer group">
-                <div class="w-12 h-12 rounded-2xl bg-emerald-600 flex items-center justify-center text-white shadow-lg group-hover:scale-105 transition relative">
-                  <i data-lucide="shield-check" class="w-6 h-6"></i>
-                  <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-amber-400 text-slate-950 font-bold text-[9px] flex items-center justify-center">🔒</span>
-                </div>
-                <span class="text-[10px] text-slate-200">NovaSafe</span>
-              </div>
-              <div onclick="triggerAntiTamperLock()" class="flex flex-col items-center gap-1 cursor-pointer group">
-                <div class="w-12 h-12 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 shadow-lg group-hover:scale-105 transition">
-                  <i data-lucide="settings" class="w-6 h-6"></i>
-                </div>
-                <span class="text-[10px] text-slate-200">Settings</span>
-              </div>
-            </div>
-
-            <button onclick="switchPhoneScreen('game')" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 transition">
-              Re-open StreamKids App
-            </button>
+          <!-- Video Player Mockup -->
+          <div class="w-full h-24 rounded-xl bg-indigo-900/40 border border-indigo-700/40 flex flex-col items-center justify-center text-center p-2">
+            <span class="text-lg">🎬</span>
+            <span class="text-[11px] font-semibold text-slate-300 mt-1">Adventure Animation Episode 4</span>
           </div>
 
-          <!-- VIEW C: PARENT SAFETY DASHBOARD & WEEKLY HEALTH REPORT -->
-          <div id="viewDashboard" style="display: none;" class="absolute inset-0 flex flex-col justify-between p-4 bg-slate-950 z-10 overflow-y-auto no-scrollbar">
-            <!-- Dashboard Header -->
-            <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
-              <div class="flex items-center gap-2">
-                <div class="w-7 h-7 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
-                  <i data-lucide="shield" class="w-4 h-4"></i>
-                </div>
-                <div>
-                  <h3 class="text-xs font-bold text-white">NovaSafe Parent Portal</h3>
-                  <span class="text-[9px] text-emerald-400 font-medium">Protected with Native Biometrics</span>
-                </div>
-              </div>
-              <button onclick="switchPhoneScreen('home')" class="text-slate-400 hover:text-white p-1">
-                <i data-lucide="x" class="w-4 h-4"></i>
-              </button>
-            </div>
-
-            <div class="space-y-3 my-2">
-              <!-- Weekly Financial Savings Card -->
-              <div class="p-3 rounded-2xl bg-gradient-to-br from-emerald-950/60 to-slate-900 border border-emerald-500/40">
-                <div class="flex justify-between items-start">
-                  <div>
-                    <span class="text-[10px] uppercase font-bold text-emerald-400 tracking-wider">Money Saved This Month</span>
-                    <div id="rupeesSavedDisplay" class="text-2xl font-black text-white mt-0.5">₹597</div>
-                    <p class="text-[9px] text-slate-400 mt-0.5">3 Unauthorized AutoPay Mandates Prevented</p>
-                  </div>
-                  <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold text-[10px] border border-emerald-500/30">100% Blocked</span>
-                </div>
-              </div>
-
-              <!-- 100% Zero Sensor Privacy Score -->
-              <div class="p-3 rounded-2xl bg-slate-900 border border-slate-800">
-                <div class="flex items-center justify-between mb-1.5">
-                  <div class="flex items-center gap-1.5">
-                    <i data-lucide="eye-off" class="w-4 h-4 text-emerald-400"></i>
-                    <span class="text-xs font-bold text-white">Zero Sensor Privacy Score</span>
-                  </div>
-                  <span class="text-xs font-black text-emerald-400 font-mono">100 / 100</span>
-                </div>
-                <div class="w-full bg-slate-800 rounded-full h-1.5 mb-2 overflow-hidden">
-                  <div class="bg-emerald-400 h-1.5 rounded-full w-full"></div>
-                </div>
-                <div class="grid grid-cols-2 gap-2 text-[10px]">
-                  <div class="p-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-300">
-                    <span class="text-slate-400 block text-[9px]">Camera &amp; Mic Usage:</span>
-                    <strong class="text-emerald-400 font-mono">0.00% (No Green Dot)</strong>
-                  </div>
-                  <div class="p-1.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-300">
-                    <span class="text-slate-400 block text-[9px]">Chat / GPS Spying:</span>
-                    <strong class="text-emerald-400 font-mono">0 Permissions</strong>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Screen Time Stats -->
-              <div class="p-3 rounded-2xl bg-slate-900 border border-slate-800">
-                <div class="flex items-center justify-between text-xs font-bold text-white mb-2">
-                  <span class="flex items-center gap-1.5"><i data-lucide="clock" class="w-4 h-4 text-amber-400"></i> Screen Time Overview</span>
-                  <span class="text-slate-400 text-[10px]">Limit: 45m / day</span>
-                </div>
-                <div class="flex items-center justify-between text-[11px] bg-slate-950 p-2 rounded-xl border border-slate-800">
-                  <span class="text-slate-300">Used today:</span>
-                  <span class="font-bold text-amber-400 font-mono">30 mins (15m remaining)</span>
-                </div>
-              </div>
-            </div>
-
-            <button onclick="switchPhoneScreen('home')" class="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 transition">
-              Exit Parent Portal
-            </button>
-          </div>
-
-          <!-- VIEW D: ACTIVE SCREEN LOCKER (The Core Shield Layer) -->
-          <div id="lockerOverlay" style="display: none;" class="absolute inset-0 bg-slate-950/95 backdrop-blur-xl z-40 flex flex-col justify-between p-5">
+          <!-- The Payment Trap Box -->
+          <div class="bg-slate-900/90 border-2 border-amber-500/40 rounded-2xl p-3 text-center">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-amber-400">⚠️ 1-Tap AutoPay Pop-up</div>
+            <div class="text-lg font-black text-white mt-0.5">₹199 <span class="text-xs font-normal text-slate-400">/ month</span></div>
+            <p class="text-[10px] text-slate-400 my-1">Accidental in-app subscription dialog</p>
             
-            <!-- Shield Header -->
-            <div class="text-center pt-1">
-              <div id="lockerIcon" class="w-11 h-11 mx-auto rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-xl mb-1 shadow-lg shadow-emerald-500/20">
-                🛡️
-              </div>
-              <h2 id="lockerTitle" class="text-sm font-black text-white tracking-tight">NovaSafe Screen Locker</h2>
-              <p id="lockerSubtitle" class="text-[10px] text-emerald-400 font-medium">Blocked: AutoPay / Google Play Billing</p>
+            <button 
+              type="button"
+              onclick="triggerLock('payment')"
+              class="w-full py-2.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 active:bg-amber-600 text-slate-950 font-black text-xs shadow-lg transition cursor-pointer"
+            >
+              ⚡ Subscribe Now (1-Tap Trap)
+            </button>
+          </div>
+
+          <div class="text-center text-[10px] text-slate-500">
+            NovaSafe running in silent background
+          </div>
+        </div>
+
+        <!-- 2. SAFE PHONE HOME SCREEN -->
+        <div id="screenHome" style="display: none;" class="w-full h-full flex flex-col justify-between p-6 bg-gradient-to-b from-sky-950 to-slate-950">
+          <div class="text-center pt-6">
+            <div class="text-3xl font-extralight text-white">12:30</div>
+            <div class="text-xs text-emerald-400 mt-1">✓ Bounced to Safe Home Screen</div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-4 text-center my-auto">
+            <div onclick="showGameScreen()" class="cursor-pointer flex flex-col items-center group">
+              <div class="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center text-white font-bold mb-1 group-hover:scale-105 transition">▶</div>
+              <span class="text-[10px] text-slate-300">KidsZone</span>
+            </div>
+            <div onclick="showDashboardScreen()" class="cursor-pointer flex flex-col items-center group">
+              <div class="w-12 h-12 rounded-2xl bg-emerald-600 flex items-center justify-center text-white font-bold mb-1 group-hover:scale-105 transition">🛡️</div>
+              <span class="text-[10px] text-slate-300">NovaSafe</span>
+            </div>
+            <div onclick="alert('Phone Settings locked by NovaSafe Self-Defense!')" class="cursor-pointer flex flex-col items-center opacity-60">
+              <div class="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-slate-400 mb-1">⚙️</div>
+              <span class="text-[10px] text-slate-400">Settings</span>
+            </div>
+          </div>
+
+          <button onclick="showGameScreen()" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 cursor-pointer">
+            Reopen KidsZone Video
+          </button>
+        </div>
+
+        <!-- 3. PARENT SAFETY DASHBOARD (FEATURE 5) -->
+        <div id="screenDashboard" style="display: none;" class="w-full h-full flex flex-col justify-between p-4 bg-slate-950 overflow-y-auto">
+          <div class="border-b border-slate-800 pb-2 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-emerald-400 font-bold">🛡️</span>
+              <span class="text-xs font-bold text-white">NovaSafe Parent Hub</span>
+            </div>
+            <button onclick="showHomeScreen()" class="text-xs text-slate-400 hover:text-white px-2 py-0.5 rounded bg-slate-800">Close</button>
+          </div>
+
+          <div class="my-auto space-y-3 py-2">
+            <!-- Rupee Counter -->
+            <div class="p-3 rounded-2xl bg-gradient-to-r from-emerald-500/20 to-teal-500/10 border border-emerald-500/30">
+              <div class="text-[10px] uppercase font-bold text-emerald-400">Total Money Protected</div>
+              <div class="text-2xl font-black text-white" id="moneyProtected">₹597</div>
+              <div class="text-[9px] text-slate-400 mt-0.5">3 Unauthorized AutoPay traps intercepted</div>
             </div>
 
-            <!-- PIN & Keypad Core -->
-            <div class="flex flex-col items-center my-auto">
-              <div class="text-[11px] text-slate-400 mb-2">Enter Parent Master PIN (Default: 4829)</div>
-              
-              <!-- 4-Dot Display -->
-              <div class="flex gap-2.5 mb-2.5" id="pinDisplay">
-                <div class="w-3 h-3 rounded-full border border-slate-600 bg-slate-800 transition"></div>
-                <div class="w-3 h-3 rounded-full border border-slate-600 bg-slate-800 transition"></div>
-                <div class="w-3 h-3 rounded-full border border-slate-600 bg-slate-800 transition"></div>
-                <div class="w-3 h-3 rounded-full border border-slate-600 bg-slate-800 transition"></div>
+            <!-- Health Score -->
+            <div class="p-3 rounded-2xl bg-slate-900 border border-slate-800">
+              <div class="flex justify-between items-center mb-1">
+                <span class="text-[11px] font-bold text-slate-200">Device Safety Health</span>
+                <span class="text-xs font-bold text-emerald-400">98 / 100</span>
               </div>
-              <div id="pinMsg" class="text-xs h-4 font-bold text-slate-400">Touch below is frozen</div>
+              <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                <div class="h-full bg-emerald-500 rounded-full" style="width: 98%;"></div>
+              </div>
+            </div>
 
-              <!-- 3x4 Number Keypad -->
-              <div class="grid grid-cols-3 gap-2 w-48 mt-2.5">
-                <button onclick="typePin('1')" class="h-9 rounded-xl bg-slate-800/90 text-white font-bold text-sm active:scale-95 transition hover:bg-slate-700">1</button>
-                <button onclick="typePin('2')" class="h-9 rounded-xl bg-slate-800/90 text-white font-bold text-sm active:scale-95 transition hover:bg-slate-700">2</button>
-                <button onclick="typePin('3')" class="h-9 rounded-xl bg-slate-800/90 text-white font-bold text-sm active:scale-95 transition hover:bg-slate-700">3</button>
-                <button onclick="typePin('4')" class="h-9 rounded-xl bg-slate-800/90 text-white font-bold text-sm active:scale-95 transition hover:bg-slate-700">4</button>
-                <button onclick="typePin('5')" class="h-9 rounded-xl bg-slate-800/90 text-white font-bold text-sm active:scale-95 transition hover:bg-slate-700">5</button>
-                <button onclick="typePin('6')" class="h-9 rounded-xl bg-slate-800/90 text-white font-bold text-sm active:scale-95 transition hover:bg-slate-700">6</button>
-                <button onclick="typePin('7')" class="h-9 rounded-xl bg-slate-800/90 text-white font-bold text-sm active:scale-95 transition hover:bg-slate-700">7</button>
-                <button onclick="typePin('8')"
+            <!-- Privacy Score -->
+            <div class="p-3 rounded-2xl bg-slate-900 border border-slate-800 space-y-1 text-[10px]">
+              <div class="font-bold text-slate-300">Zero Hardware Sensors Verified:</div>
+              <div class="flex justify-between text-slate-400">
+                <span>Camera Access</span>
+                <span class="text-emerald-400 font-bold">0% (BLOCKED)</span>
+              </div>
+              <div class="flex justify-between text-slate-400">
+                <span>Microphone Access</span>
+                <span class="text-emerald-400 font-bold">0% (BLOCKED)</span>
+              </div>
+              <div class="flex justify-between text-slate-400">
+                <span>Green Privacy Dot</span>
+                <span class="text-emerald-400 font-bold">NEVER ACTIVE</span>
+              </div>
+            </div>
+          </div>
+
+          <button onclick="showGameScreen()" class="w-full py-2 rounded-xl bg-indigo-600/30 text-indigo-300 text-xs font-semibold cursor-pointer">
+            Return to App Simulator
+          </button>
+        </div>
+
+        <!-- 4. ACTIVE SCREEN LOCKER OVERLAY -->
+        <div id="screenLocker" style="display: none;" class="absolute inset-0 bg-slate-950/95 backdrop-blur-md z-40 flex flex-col justify-between p-4">
+          <!-- Top Info -->
+          <div class="text-center pt-1">
+            <div id="lockerBadgeIcon" class="w-9 h-9 mx-auto rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-base mb-1">
+              🛡️
+            </div>
+            <div id="lockerHeading" class="text-xs font-bold text-white">NovaSafe Screen Locker</div>
+            <div id="lockerSubtext" class="text-[10px] text-amber-400 font-medium">Payment Intercepted</div>
+          </div>
+
+          <!-- PIN Pad -->
+          <div class="flex flex-col items-center my-auto">
+            <div class="text-[10px] text-slate-400 mb-1.5">Enter Parent PIN (Default: 4829)</div>
+            <div class="flex gap-2 mb-2" id="pinDotsRow">
+              <div class="w-2.5 h-2.5 rounded-full border border-slate-600 bg-slate-800"></div>
+              <div class="w-2.5 h-2.5 rounded-full border border-slate-600 bg-slate-800"></div>
+              <div class="w-2.5 h-2.5 rounded-full border border-slate-600 bg-slate-800"></div>
+              <div class="w-2.5 h-2.5 rounded-full border border-slate-600 bg-slate-800"></div>
+            </div>
+            <div id="pinStatusText" class="text-[11px] h-4 font-bold text-amber-400">Screen frozen</div>
+
+            <div class="grid grid-cols-3 gap-2 w-44 mt-2">
+              <button type="button" onclick="handleNum('1')" class="h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs cursor-pointer">1</button>
+              <button type="button" onclick="handleNum('2')" class="h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs cursor-pointer">2</button>
+              <button type="button" onclick="handleNum('3')" class="h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs cursor-pointer">3</button>
+              <button type="button" onclick="handleNum('4')" class="h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs cursor-pointer">4</button>
+              <button type="button" onclick="handleNum('5')" class="h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs cursor-pointer">5</button>
+              <button type="button" onclick="handleNum('6')" class="h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs cursor-pointer">6</button>
+              <button type="button" onclick="handleNum('7')" class="h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs cursor-pointer">7</button>
+              <button type="button" onclick="handleNum('8')" class="h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs cursor-pointer">8</button>
+              <button type="button" onclick="handleNum('9')" class="h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs cursor-pointer">9</button>
+              <button type="button" onclick="resetPinInput()" class="h-8 rounded-lg bg-rose-500/20 text-rose-400 text-[10px] font-bold cursor-pointer">CLR</button>
+              <button type="button" onclick="handleNum('0')" class="h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs cursor-pointer">0</button>
+              <button type="button" onclick="biometricPass()" class="h-8 rounded-lg bg-emerald-500/20 text-emerald-400 text-xs font-bold cursor-pointer" title="Fingerprint">👆</button>
+            </div>
+          </div>
+
+          <!-- DYNAMIC BOTTOM BUTTONS (Changes depending on screen lock reason) -->
+          <div id="dynamicBottomArea" class="space-y-1.5 pt-1">
+            <!-- Injected via JavaScript -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Android Bottom Line -->
+      <div class="h-4 bg-slate-950 flex items-center justify-center shrink-0">
+        <div class="w-20 h-1 bg-slate-700 rounded-full"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT HAND CONTROLS (GUARANTEED TO TRIGGER EACH MODE) -->
+    <div class="space-y-3 w-full max-w-sm">
+      <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
+        <div class="text-xs font-bold text-white mb-2 uppercase tracking-wide">Test Scenarios (Click any):</div>
+        
+        <div class="space-y-2">
+          <!-- Scenario 1 -->
+          <button 
+            type="button" 
+            onclick="triggerLock('payment')" 
+            class="w-full py-2.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs text-left flex justify-between items-center cursor-pointer"
+          >
+            <span>⚡ 1. Accidental AutoPay Payment</span>
+            <span>&rarr;</span>
+          </button>
+
+          <!-- Scenario 2 -->
+          <button 
+            type="button" 
+            onclick="triggerLock('screentime')" 
+            class="w-full py-2.5 px-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs text-left flex justify-between items-center cursor-pointer"
+          >
+            <span>⏱️ 2. Strict Screen Time Limit</span>
+            <span>&rarr;</span>
+          </button>
+
+          <!-- Scenario 3 -->
+          <button 
+            type="button" 
+            onclick="triggerLock('bedtime')" 
+            class="w-full py-2.5 px-3 rounded-xl bg-indigo-700 hover:bg-indigo-600 text-white font-bold text-xs text-left flex justify-between items-center cursor-pointer"
+          >
+            <span>🌙 3. Bedtime Blackout (Sleep Lock)</span>
+            <span>&rarr;</span>
+          </button>
+
+          <!-- Scenario 4 -->
+          <button 
+            type="button" 
+            onclick="showDashboardScreen()" 
+            class="w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs text-left flex justify-between items-center cursor-pointer"
+          >
+            <span>📊 4. Safety Health & Money Saved</span>
+            <span>&rarr;</span>
+          </button>
+        </div>
+
+        <div class="mt-3 pt-2 border-t border-slate-800 flex justify-between text-xs text-slate-400">
+          <span>Parent PIN:</span>
+          <span class="font-mono text-emerald-400 font-bold">4829</span>
+        </div>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 text-xs text-slate-300 space-y-2">
+        <div class="font-bold text-white text-xs">Exhibition Presentation Note:</div>
+        <p>• <strong>Payment Mode:</strong> Shows <em>Emergency Bounce</em> (cancels money safely).</p>
+        <p>• <strong>Screen Time & Bedtime:</strong> Emergency exit is <strong>strictly disabled</strong> to prevent children from bypassing restrictions.</p>
+        <p>• <strong>Ask Parent:</strong> Allows child to ping parent companion phone for +15 min approval.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // GLOBAL STATE
+    var currentPin = "";
+    var activeMode = "payment"; // 'payment' | 'screentime' | 'bedtime'
+    var totalSaved = 597;
+
+    // 1. TRIGGER THE ACTIVE SCREEN LOCKER
+    function triggerLock(mode) {
+      activeMode = mode;
+      currentPin = "";
+      updateDotsUI();
+
+      var locker = document.getElementById('screenLocker');
+      var badge = document.getElementById('lockerBadgeIcon');
+      var heading = document.getElementById('lockerHeading');
+      var sub = document.getElementById('lockerSubtext');
+      var status = document.getElementById('pinStatusText');
+      var bottomArea = document.getElementById('dynamicBottomArea');
+
+      locker.style.display = 'flex';
+
+      if (mode === 'payment') {
+        badge.innerText = "🛡️";
+        heading.innerText = "NovaSafe Payment Shield";
+        sub.innerText = "Blocked: UPI AutoPay / Play Billing";
+        status.innerText = "Touch below frozen. Enter PIN.";
+        status.className = "text-[11px] h-4 font-bold text-amber-400";
+
+        // Payment HAS Emergency Exit
+        bottomArea.innerHTML = 
+          '<button type="button" onclick="bounceToHome()" class="w-full py-2 px-3 rounded-xl bg-rose-600/30 border border-rose-500/40 hover:bg-rose-600/50 text-rose-200 font-bold text-xs cursor-pointer">🚨 Emergency Exit & Bounce Home</button>' +
+          '<div class="text-[9px] text-center text-slate-500">Cancels transaction intent without debiting bank account.</div>';
+
+      } else if (mode === 'screentime') {
+        badge.innerText = "⏱️";
+        heading.innerText = "Screen Time Limit Reached";
+        sub.innerText = "KidsZone Daily Limit (30 Mins) Expired";
+        status.innerText = "Strict Lock. No Emergency Exit.";
+        status.className = "text-[11px] h-4 font-bold text-rose-400";
+
+        // Strict Lock: NO Bounce to Home! Has 'Ask Parent'
+        bottomArea.innerHTML = 
+          '<button type="button" onclick="askParentPing()" class="w-full py-1.5 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs cursor-pointer">📩 Ask Parent for +15 Mins</button>' +
+          '<div class="p-1.5 rounded-lg bg-rose-950/40 border border-rose-500/30 text-center text-[9px] text-rose-300 font-semibold">🔒 Strict Enforcer: Bounce disabled to prevent app bypass.</div>';
+
+      } else if (mode === 'bedtime') {
+        badge.innerText = "🌙";
+        heading.innerText = "Bedtime Blackout Active";
+        sub.innerText = "Scheduled Sleep Lock (9:30 PM - 6:00 AM)";
+        status.innerText = "Device in Sleep Mode";
+        status.className = "text-[11px] h-4 font-bold text-indigo-400";
+
+        bottomArea.innerHTML = 
+          '<button type="button" onclick="alert(\'Emergency SOS: Calling 112 / Mom...\')" class="w-full py-1.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs cursor-pointer">📞 Emergency SOS Calls Only</button>' +
+          '<div class="text-[9px] text-center text-slate-500">Games and entertainment blocked until 6:00 AM.</div>';
+      }
+    }
+
+    // 2. PIN LOGIC
+    function handleNum(num) {
+      if (currentPin.length < 4) {
+        currentPin += num;
+        updateDotsUI();
+
+        if (currentPin.length === 4) {
+          validatePin();
+        }
+      }
+    }
+
+    function resetPinInput() {
+      currentPin = "";
+      updateDotsUI();
+      var status = document.getElementById('pinStatusText');
+      status.innerText = "Touch below frozen";
+      status.className = "text-[11px] h-4 font-bold text-slate-400";
+    }
+
+    function updateDotsUI() {
+      var container = document.getElementById('pinDotsRow');
+      var dots = container.children;
+      for (var i = 0; i < dots.le
